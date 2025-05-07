@@ -9,9 +9,7 @@ import (
 	"time"
 )
 
-func main() {
-	ctx := context.Background()
-	client := oxylabs.NewOxylabsHttpClient(os.Getenv("oxylabs_username"), os.Getenv("oxylabs_password"), os.Getenv("oxylabs_entry"))
+func run(ctx context.Context, client oxylabs.HttpClient) {
 	idx := 1
 	for {
 		req, err := http.NewRequest(http.MethodGet, "https://api.kadaster.nl/lvwoz/wozwaardeloket-api/v1/wozwaarde/nummeraanduiding/1641200001127387", nil)
@@ -26,4 +24,13 @@ func main() {
 		log.Printf("request %d succeeded\n", idx)
 		idx++
 	}
+}
+
+func main() {
+	ctx := context.Background()
+	client := oxylabs.NewOxylabsHttpClient(os.Getenv("oxylabs_username"), os.Getenv("oxylabs_password"), os.Getenv("oxylabs_entry"))
+	go run(ctx, client)
+	go run(ctx, client)
+	go run(ctx, client)
+	select {}
 }
