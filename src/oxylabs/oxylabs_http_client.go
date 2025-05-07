@@ -15,6 +15,10 @@ type HttpClient interface {
 	Do(ctx context.Context, req *http.Request) (resBody []byte, err error)
 }
 
+var (
+	Err404 = errors.New("error 404")
+)
+
 type oxylabsHttpClient struct {
 	username string
 	password string
@@ -82,7 +86,7 @@ func (h *oxylabsHttpClient) do(req *http.Request) (resBody []byte, retry bool, e
 		return nil, true, nil
 	}
 	if res.StatusCode == http.StatusNotFound {
-		return nil, false, errors.New("error 404")
+		return nil, false, Err404
 	}
 	if res.StatusCode != http.StatusOK {
 		resBody, err := io.ReadAll(res.Body)
